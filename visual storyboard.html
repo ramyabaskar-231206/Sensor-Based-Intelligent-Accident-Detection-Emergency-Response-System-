@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Accident Detection System - Visual Storyboard</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #0099cc, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .storyboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .scene {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.05));
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .scene-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #00d4ff;
+            padding-bottom: 10px;
+        }
+
+        .scene-content {
+            position: relative;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Scene 1 - Vehicle with Sensors */
+        .vehicle-main {
+            width: 180px;
+            height: 90px;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            border-radius: 15px 15px 5px 5px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 212, 255, 0.3);
+            border: 2px solid #00d4ff;
+            margin-bottom: 30px;
+        }
+
+        .vehicle-main::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 15px;
+            right: 15px;
+            height: 35px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border-radius: 8px;
+            border: 1px solid #00d4ff;
+        }
+
+        .vehicle-main::after {
+            content: '🚗';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.8));
+        }
+
+        .sensor-node {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #ff6b6b, #e74c3c);
+            border-radius: 50%;
+            box-shadow: 0 0 15px #ff6b6b;
+            animation: sensorPulse 2s ease-in-out infinite;
+        }
+
+        .sensor-1 { top: 15px; left: 25px; }
+        .sensor-2 { top: 15px; right: 25px; }
+        .sensor-3 { bottom: 15px; left: 50%; transform: translateX(-50%); }
+
+        @keyframes sensorPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.7; }
+        }
+
+        .microcontroller-main {
+            width: 100px;
+            height: 60px;
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            border-radius: 8px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
+            border: 2px solid #00ff88;
+            margin: 20px;
+        }
+
+        .microcontroller-main::before {
+            content: 'ESP32';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .gps-module-main {
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            border-radius: 6px;
+            position: relative;
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.6);
+            border: 2px solid #ffaa00;
+            margin: 10px;
+        }
+
+        .gps-module-main::before {
+            content: '📡';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: dataFlow 2s linear infinite;
+            box-shadow: 0 0 8px #00d4ff;
+        }
+
+        @keyframes dataFlow {
+            0% { opacity: 0; transform: translateX(-100%); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: translateX(100%); }
+        }
+
+        /* Scene 2 - Accident Detection */
+        .accident-vehicle {
+            width: 180px;
+            height: 90px;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            border-radius: 15px 15px 5px 5px;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 107, 107, 0.5);
+            border: 2px solid #ff6b6b;
+            transform: rotate(-8deg);
+            animation: impactShake 1s ease-in-out infinite;
+        }
+
+        @keyframes impactShake {
+            0%, 100% { transform: rotate(-8deg) translateX(0px); }
+            25% { transform: rotate(-6deg) translateX(-3px); }
+            75% { transform: rotate(-10deg) translateX(3px); }
+        }
+
+        .accident-vehicle::after {
+            content: '🚗';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px rgba(255, 107, 107, 0.8));
+        }
+
+        .impact-wave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+            border: 3px solid #ff6b6b;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: impactWave 1.5s ease-out infinite;
+        }
+
+        @keyframes impactWave {
+            0% { width: 50px; height: 50px; opacity: 1; }
+            100% { width: 200px; height: 200px; opacity: 0; }
+        }
+
+        .alert-popup {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            border: 2px solid #ff4757;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 0.8rem;
+            animation: alertBlink 1s ease-in-out infinite;
+        }
+
+        @keyframes alertBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Scene 3 - Emergency Alert */
+        .smartphone {
+            width: 120px;
+            height: 200px;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            border: 3px solid #00d4ff;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+            animation: phoneVibrate 0.5s ease-in-out infinite;
+        }
+
+        @keyframes phoneVibrate {
+            0%, 100% { transform: translateX(0px); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .phone-screen {
+            margin: 8px;
+            height: calc(100% - 16px);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.7rem;
+        }
+
+        .alert-header {
+            color: #ff4757;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #ff4757;
+            padding-bottom: 5px;
+        }
+
+        .alert-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .emergency-icons {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            font-size: 2rem;
+            animation: emergencyPulse 1s ease-in-out infinite;
+        }
+
+        @keyframes emergencyPulse {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        .gsm-module {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: 80px;
+            height: 50px;
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+            border-radius: 8px;
+            border: 2px solid #bb6bd9;
+            box-shadow: 0 0 15px rgba(155, 89, 182, 0.6);
+        }
+
+        .gsm-module::before {
+            content: '📶';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+        }
+
+        /* Scene 4 - Cloud Dashboard */
+        .cloud-dashboard-main {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 153, 204, 0.1));
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            animation: dashboardFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes dashboardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .dashboard-header {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #00d4ff;
+            padding-bottom: 8px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: calc(100% - 60px);
+        }
+
+        .dashboard-panel {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 0.9rem;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .panel-content {
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: statusBlink 2s ease-in-out infinite;
+        }
+
+        .status-active { background: #00ff88; }
+        .status-alert { background: #ff4757; }
+
+        @keyframes statusBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .data-stream {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: dataStream 1.5s linear infinite;
+        }
+
+        @keyframes dataStream {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        .component-label {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00d4ff;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            border: 1px solid #00d4ff;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .navigation-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #00d4ff, #0099cc);
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(45deg, #00ff88, #27ae60);
+        }
+
+        @media (max-width: 768px) {
+            .storyboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .scene {
+                min-height: 350px;
+            }
+            
+            .scene-content {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Intelligent Accident Detection System - Visual Storyboard</h1>
+        
+        <div class="storyboard">
+            <!-- Scene 1: Vehicle with Sensors -->
+            <div class="scene" id="scene1">
+                <div class="scene-title">Scene 1: Vehicle with IoT Sensors</div>
+                <div class="scene-content">
+                    <div class="vehicle-main">
+                        <div class="sensor-node sensor-1"></div>
+                        <div class="sensor-node sensor-2"></div>
+                        <div class="sensor-node sensor-3"></div>
+                        <div class="component-label" style="bottom: -25px; left: 50%; transform: translateX(-50%);">
+                            Accelerometer + Gyroscope + Impact Sensors
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 20px; align-items: center;">
+                        <div class="microcontroller-main">
+                            <div class="component-label" style="bottom: -20px; left: 50%; transform: translateX(-50%);">
+                                Microcontroller
+                            </div>
+                        </div>
+                        
+                        <div class="gps-module-main">
+                            <div class="component-label" style="bottom: -20px; left: 50%; transform: translateX(-50%);">
+                                GPS Module
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="connection-line" style="top: 120px; left: 20%; width: 60%;"></div>
+                    <div class="connection-line" style="top: 200px; left: 30%; width: 40%; transform: rotate(45deg);"></div>
+                </div>
+            </div>
+
+            <!-- Scene 2: Accident Detection -->
+            <div class="scene" id="scene2">
+                <div class="scene-title">Scene 2: Accident Detection in Real-Time</div>
+                <div class="scene-content">
+                    <div class="accident-vehicle">
+                        <div class="sensor-node" style="top: 15px; left: 25px; background: radial-gradient(circle, #ff4757, #c0392b);"></div>
+                        <div class="sensor-node" style="top: 15px; right: 25px; background: radial-gradient(circle, #ff4757, #c0392b);"></div>
+                        <div class="sensor-node" style="bottom: 15px; left: 50%; transform: translateX(-50%); background: radial-gradient(circle, #ff4757, #c0392b);"></div>
+                        <div class="component-label" style="bottom: -25px; left: 50%; transform: translateX(-50%);">
+                            Impact Detected!
+                        </div>
+                    </div>
+                    
+                    <div class="impact-wave"></div>
+                    <div class="impact-wave" style="animation-delay: 0.5s;"></div>
+                    
+                    <div class="alert-popup">
+                        🚨 COLLISION DETECTED<br>
+                        Processing Alert...
+                    </div>
+                    
+                    <div style="margin-top: 30px; display: flex; gap: 15px; align-items: center;">
+                        <div class="microcontroller-main" style="animation: sensorPulse 0.5s ease-in-out infinite;">
+                            <div class="component-label" style="bottom: -20px; left: 50%; transform: translateX(-50%);">
+                                Processing Data
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 2rem; color: #ff4757; animation: alertBlink 0.8s ease-in-out infinite;">
+                            ⚡
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 3: Emergency Alert -->
+            <div class="scene" id="scene3">
+                <div class="scene-title">Scene 3: Emergency Alert Sent</div>
+                <div class="scene-content">
+                    <div class="gsm-module">
+                        <div class="component-label" style="bottom: -20px; left: 50%; transform: translateX(-50%);">
+                            GSM/IoT Module
+                        </div>
+                    </div>
+                    
+                    <div class="smartphone">
+                        <div class="phone-screen">
+                            <div class="alert-header">🚨 EMERGENCY ALERT</div>
+                            <div class="alert-info">
+                                <div><strong>Vehicle Accident</strong></div>
+                                <div>📍 Highway 101, Mile 23</div>
+                                <div>⚠️ Severity: Moderate</div>
+                                <div>👤 Driver: John Doe</div>
+                                <div>📞 Contact: +1-555-0123</div>
+                            </div>
+                            <div style="text-align: center; color: #00ff88; font-weight: bold;">
+                                Help Dispatched
+                            </div>
+                        </div>
+                        <div class="component-label" style="bottom: -25px; left: 50%; transform: translateX(-50%);">
+                            Emergency Contact Alert
+                        </div>
+                    </div>
+                    
+                    <div class="emergency-icons">
+                        🚑 🚨 🏥
+                    </div>
+                    
+                    <div class="connection-line" style="top: 80px; left: 20%; width: 50%; transform: rotate(-30deg);"></div>
+                </div>
+            </div>
+
+            <!-- Scene 4: Cloud Dashboard -->
+            <div class="scene" id="scene4">
+                <div class="scene-title">Scene 4: Live Cloud Dashboard Analytics</div>
+                <div class="scene-content">
+                    <div class="cloud-dashboard-main">
+                        <div class="dashboard-header">🌐 Emergency Response Dashboard</div>
+                        <div class="dashboard-grid">
+                            <div class="dashboard-panel">
+                                <div class="panel-title">Incident Status</div>
+                                <div class="panel-content">
+                                    <div><span class="status-indicator status-alert"></span>Active Emergency</div>
+                                    <div>Location: Highway 101</div>
+                                    <div>Time: 14:32:15</div>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-panel">
+                                <div class="panel-title">Response Team</div>
+                                <div class="panel-content">
+                                    <div><span class="status-indicator status-active"></span>Ambulance Dispatched</div>
+                                    <div>ETA: 3 minutes</div>
+                                    <div>Unit: AMB-247</div>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-panel">
+                                <div class="panel-title">Vehicle Data</div>
+                                <div class="panel-content">
+                                    <div>Impact Force: 8.2G</div>
+                                    <div>Speed: 45 mph</div>
+                                    <div>Airbag: Deployed</div>
+                                </div>
+                            </div>
+                            
+                            <div class="dashboard-panel">
+                                <div class="panel-title">Live Map</div>
+                                <div class="panel-content">
+                                    <div style="font-size: 2rem; margin: 10px 0;">🗺️</div>
+                                    <div><span style="color: #ff4757;">●</span> Accident Location</div>
+                                    <div><span style="color: #00ff88;">●</span> Emergency Units</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="data-stream"></div>
+                        <div class="component-label" style="top: -25px; left: 50%; transform: translateX(-50%);">
+                            Real-Time Analytics & Response Coordination
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-controls">
+            <button class="nav-btn" onclick="highlightScene(1)">Scene 1: Sensors</button>
+            <button class="nav-btn" onclick="highlightScene(2)">Scene 2: Detection</button>
+            <button class="nav-btn" onclick="highlightScene(3)">Scene 3: Alert</button>
+            <button class="nav-btn" onclick="highlightScene(4)">Scene 4: Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScene = 1;
+        
+        function highlightScene(sceneNumber) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Scroll to scene
+            const scene = document.getElementById(`scene${sceneNumber}`);
+            scene.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Add temporary highlight effect
+            scene.style.boxShadow = '0 0 50px rgba(0, 212, 255, 0.8)';
+            setTimeout(() => {
+                scene.style.boxShadow = '0 10px 30px rgba(0, 212, 255, 0.2)';
+            }, 2000);
+            
+            currentScene = sceneNumber;
+        }
+        
+        // Auto-cycle through scenes every 8 seconds
+        function autoCycle() {
+            const nextScene = (currentScene % 4) + 1;
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons[nextScene - 1].click();
+        }
+        
+        // Start auto-cycle after 5 seconds
+        setTimeout(() => {
+            setInterval(autoCycle, 8000);
+        }, 5000);
+        
+        // Initialize first scene as active
+        document.querySelector('.nav-btn').classList.add('active');
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984baae0b5903be0',t:'MTc1ODgxNTMyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

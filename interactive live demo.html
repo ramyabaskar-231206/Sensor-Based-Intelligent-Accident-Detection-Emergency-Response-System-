@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultra-Realistic Accident Detection System - Live Demonstration</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            min-height: 100vh;
+            padding: 15px;
+            position: relative;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 3.2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00d4ff, #0099cc, #ffffff, #00ff88, #00d4ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+            animation: titleShimmer 4s ease-in-out infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes titleShimmer {
+            0%, 100% { 
+                background-position: 0% 50%;
+                filter: drop-shadow(0 0 25px rgba(0, 212, 255, 0.6));
+            }
+            50% { 
+                background-position: 100% 50%;
+                filter: drop-shadow(0 0 35px rgba(0, 255, 136, 0.8));
+            }
+        }
+
+        .demo-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.12) 0%, 
+                rgba(0, 153, 204, 0.06) 25%,
+                rgba(0, 255, 136, 0.08) 50%,
+                rgba(0, 153, 204, 0.06) 75%,
+                rgba(0, 212, 255, 0.12) 100%);
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #00d4ff, #00ff88, #00d4ff) 1;
+            border-radius: 30px;
+            padding: 35px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 20px 60px rgba(0, 212, 255, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                0 0 100px rgba(0, 212, 255, 0.1);
+            min-height: 800px;
+            position: relative;
+        }
+
+        .demo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, #00d4ff, #00ff88, #00d4ff) 1;
+            padding-bottom: 20px;
+        }
+
+        .demo-title {
+            font-size: 2.4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .demo-status {
+            background: linear-gradient(135deg, #00d4ff, #0099cc, #00d4ff);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 35px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            animation: statusGlow 3s ease-in-out infinite;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes statusGlow {
+            0%, 100% { 
+                box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 12px 35px rgba(0, 212, 255, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        .demo-content {
+            position: relative;
+            height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 2000px;
+        }
+
+        /* Ultra-Realistic Vehicle */
+        .realistic-vehicle {
+            width: 350px;
+            height: 180px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: realisticFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes realisticFloat {
+            0%, 100% { transform: translateY(0px) rotateX(8deg) rotateY(-2deg); }
+            50% { transform: translateY(-12px) rotateX(8deg) rotateY(-2deg); }
+        }
+
+        .vehicle-chassis {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #2c3e50 0%, 
+                #34495e 15%,
+                #4a6741 30%,
+                #34495e 50%,
+                #2c3e50 70%,
+                #1a252f 100%);
+            border-radius: 25px 25px 12px 12px;
+            position: relative;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(0, 212, 255, 0.3),
+                inset 0 3px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.3);
+            border: 4px solid #00d4ff;
+            transform: translateZ(30px);
+        }
+
+        .vehicle-chassis.crashed {
+            animation: crashRealistic 1.2s ease-in-out infinite;
+            border-color: #ff4757;
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(255, 71, 87, 0.5),
+                inset 0 3px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes crashRealistic {
+            0%, 100% { 
+                transform: translateZ(30px) rotateZ(-18deg) translateY(8px) translateX(0px);
+            }
+            25% { 
+                transform: translateZ(32px) rotateZ(-14deg) translateY(5px) translateX(-4px);
+            }
+            75% { 
+                transform: translateZ(28px) rotateZ(-22deg) translateY(11px) translateX(4px);
+            }
+        }
+
+        .vehicle-windshield {
+            position: absolute;
+            top: -18px;
+            left: 25px;
+            right: 25px;
+            height: 70px;
+            background: linear-gradient(135deg, 
+                rgba(52, 152, 219, 0.9) 0%,
+                rgba(41, 128, 185, 0.95) 30%,
+                rgba(52, 152, 219, 0.85) 70%,
+                rgba(41, 128, 185, 0.9) 100%);
+            border-radius: 15px;
+            border: 3px solid #00d4ff;
+            box-shadow: 
+                inset 0 3px 15px rgba(0, 212, 255, 0.4),
+                0 0 20px rgba(0, 212, 255, 0.2);
+            transform: translateZ(8px);
+        }
+
+        .vehicle-windshield::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            height: 20px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.3) 20%,
+                rgba(255, 255, 255, 0.1) 80%,
+                transparent 100%);
+            border-radius: 8px;
+        }
+
+        .vehicle-lights {
+            position: absolute;
+            width: 25px;
+            height: 15px;
+            background: radial-gradient(ellipse, #ffffff, #f1c40f, #e67e22);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(241, 196, 64, 0.8);
+            animation: headlightFlicker 3s ease-in-out infinite;
+        }
+
+        .vehicle-lights.left { top: 20px; left: 15px; }
+        .vehicle-lights.right { top: 20px; right: 15px; }
+
+        @keyframes headlightFlicker {
+            0%, 100% { opacity: 1; box-shadow: 0 0 15px rgba(241, 196, 64, 0.8); }
+            50% { opacity: 0.8; box-shadow: 0 0 25px rgba(241, 196, 64, 1); }
+        }
+
+        .vehicle-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(15px);
+            font-size: 4.2rem;
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.9));
+            animation: iconRealistic 3s ease-in-out infinite;
+        }
+
+        @keyframes iconRealistic {
+            0%, 100% { 
+                filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.9));
+                transform: translate(-50%, -50%) translateZ(15px) scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 30px rgba(0, 255, 136, 1));
+                transform: translate(-50%, -50%) translateZ(20px) scale(1.02);
+            }
+        }
+
+        /* Ultra-Realistic Sensors */
+        .realistic-sensor {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            background: radial-gradient(circle at 35% 35%, 
+                #ff6b6b 0%,
+                #e74c3c 40%,
+                #c0392b 70%,
+                #a93226 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 8px 20px rgba(255, 107, 107, 0.6),
+                0 0 25px rgba(255, 107, 107, 0.4),
+                inset 0 3px 8px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+            animation: sensorRealistic 2.5s ease-in-out infinite;
+            transform: translateZ(40px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .realistic-sensor.triggered {
+            background: radial-gradient(circle at 35% 35%, 
+                #ff4757 0%,
+                #c0392b 40%,
+                #a93226 70%,
+                #922b21 100%);
+            animation: sensorTriggered 0.7s ease-in-out infinite;
+            box-shadow: 
+                0 12px 30px rgba(255, 71, 87, 0.8),
+                0 0 35px rgba(255, 71, 87, 0.6),
+                inset 0 3px 8px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes sensorRealistic {
+            0%, 100% { 
+                transform: translateZ(40px) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translateZ(45px) scale(1.15);
+                opacity: 0.85;
+            }
+        }
+
+        @keyframes sensorTriggered {
+            0%, 100% { 
+                transform: translateZ(40px) scale(1);
+                box-shadow: 
+                    0 12px 30px rgba(255, 71, 87, 0.8),
+                    0 0 35px rgba(255, 71, 87, 0.6),
+                    inset 0 3px 8px rgba(255, 255, 255, 0.4);
+            }
+            50% { 
+                transform: translateZ(50px) scale(1.3);
+                box-shadow: 
+                    0 15px 40px rgba(255, 71, 87, 1),
+                    0 0 45px rgba(255, 71, 87, 0.8),
+                    inset 0 3px 8px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .sensor-accelerometer { top: 30px; left: 50px; }
+        .sensor-gyroscope { top: 30px; right: 50px; }
+        .sensor-impact { bottom: 30px; left: 50%; transform: translateX(-50%) translateZ(40px); }
+
+        /* Ultra-Realistic Components */
+        .realistic-component {
+            position: absolute;
+            background: linear-gradient(135deg, 
+                #27ae60 0%,
+                #2ecc71 25%,
+                #58d68d 50%,
+                #2ecc71 75%,
+                #27ae60 100%);
+            border-radius: 15px;
+            box-shadow: 
+                0 15px 35px rgba(46, 204, 113, 0.5),
+                0 0 30px rgba(46, 204, 113, 0.3),
+                inset 0 3px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.2);
+            border: 3px solid #00ff88;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            transform: translateZ(35px);
+            animation: componentRealistic 4s ease-in-out infinite;
+        }
+
+        @keyframes componentRealistic {
+            0%, 100% { 
+                transform: translateZ(35px) translateY(0px);
+                box-shadow: 
+                    0 15px 35px rgba(46, 204, 113, 0.5),
+                    0 0 30px rgba(46, 204, 113, 0.3),
+                    inset 0 3px 0 rgba(255, 255, 255, 0.25);
+            }
+            50% { 
+                transform: translateZ(40px) translateY(-8px);
+                box-shadow: 
+                    0 20px 45px rgba(46, 204, 113, 0.7),
+                    0 0 40px rgba(46, 204, 113, 0.5),
+                    inset 0 3px 0 rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .realistic-component.active {
+            animation: componentActive 1s ease-in-out infinite;
+        }
+
+        @keyframes componentActive {
+            0%, 100% { 
+                transform: translateZ(35px) scale(1);
+                box-shadow: 
+                    0 15px 35px rgba(46, 204, 113, 0.5),
+                    0 0 30px rgba(46, 204, 113, 0.3),
+                    inset 0 3px 0 rgba(255, 255, 255, 0.25);
+            }
+            50% { 
+                transform: translateZ(45px) scale(1.08);
+                box-shadow: 
+                    0 25px 55px rgba(46, 204, 113, 0.8),
+                    0 0 50px rgba(46, 204, 113, 0.6),
+                    inset 0 3px 0 rgba(255, 255, 255, 0.35);
+            }
+        }
+
+        .esp32-controller {
+            right: 300px;
+            top: 40%;
+            width: 160px;
+            height: 100px;
+            font-size: 1.1rem;
+        }
+
+        .gps-realistic {
+            right: 100px;
+            top: 20%;
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #f39c12, #e67e22, #d68910);
+            border-color: #ffaa00;
+            font-size: 2rem;
+        }
+
+        .gsm-realistic {
+            right: 100px;
+            bottom: 20%;
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad, #7d3c98);
+            border-color: #bb6bd9;
+            font-size: 2rem;
+        }
+
+        .gsm-realistic.transmitting {
+            animation: gsmTransmitting 1.2s ease-in-out infinite;
+        }
+
+        @keyframes gsmTransmitting {
+            0%, 100% { 
+                transform: translateZ(35px) scale(1);
+                box-shadow: 
+                    0 15px 35px rgba(155, 89, 182, 0.5),
+                    0 0 30px rgba(155, 89, 182, 0.3),
+                    inset 0 3px 0 rgba(255, 255, 255, 0.25);
+            }
+            50% { 
+                transform: translateZ(45px) scale(1.12);
+                box-shadow: 
+                    0 25px 55px rgba(155, 89, 182, 0.8),
+                    0 0 50px rgba(155, 89, 182, 0.6),
+                    inset 0 3px 0 rgba(255, 255, 255, 0.35);
+            }
+        }
+
+        /* Ultra-Realistic Data Flow */
+        .realistic-dataflow {
+            position: absolute;
+            height: 6px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(0, 212, 255, 0.3) 10%,
+                #00d4ff 30%,
+                #00ff88 50%,
+                #00d4ff 70%,
+                rgba(0, 212, 255, 0.3) 90%,
+                transparent 100%);
+            border-radius: 3px;
+            box-shadow: 
+                0 0 20px #00d4ff,
+                0 0 40px rgba(0, 212, 255, 0.5);
+            opacity: 0;
+            transform: translateZ(20px);
+            animation: realisticDataFlow 3s linear infinite;
+        }
+
+        .realistic-dataflow.flowing {
+            opacity: 1;
+        }
+
+        @keyframes realisticDataFlow {
+            0% { 
+                transform: translateZ(20px) translateX(-120%) scaleY(0.8);
+                opacity: 0;
+                box-shadow: 0 0 15px #00d4ff;
+            }
+            20% {
+                opacity: 1;
+                transform: translateZ(25px) scaleY(1);
+                box-shadow: 0 0 25px #00d4ff, 0 0 50px rgba(0, 212, 255, 0.5);
+            }
+            80% {
+                opacity: 1;
+                transform: translateZ(25px) scaleY(1);
+                box-shadow: 0 0 25px #00d4ff, 0 0 50px rgba(0, 212, 255, 0.5);
+            }
+            100% { 
+                transform: translateZ(20px) translateX(120%) scaleY(0.8);
+                opacity: 0;
+                box-shadow: 0 0 15px #00d4ff;
+            }
+        }
+
+        .flow-sensors-esp32 { top: 50%; left: 370px; width: 200px; }
+        .flow-esp32-gps { top: 30%; right: 220px; width: 140px; transform: rotate(-30deg) translateZ(20px); }
+        .flow-esp32-gsm { bottom: 30%; right: 220px; width: 140px; transform: rotate(30deg) translateZ(20px); }
+        .flow-gsm-cloud { top: 15%; right: 80px; width: 180px; transform: rotate(-50deg) translateZ(20px); }
+
+        /* Ultra-Realistic Impact Effects */
+        .realistic-impact {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            border: 5px solid #ff6b6b;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) translateZ(15px);
+            animation: realisticImpactWave 2s ease-out infinite;
+            opacity: 0;
+            box-shadow: 
+                0 0 30px rgba(255, 107, 107, 0.8),
+                inset 0 0 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .realistic-impact.active {
+            opacity: 1;
+        }
+
+        @keyframes realisticImpactWave {
+            0% { 
+                width: 80px; 
+                height: 80px; 
+                opacity: 1;
+                transform: translate(-50%, -50%) translateZ(15px) scale(1);
+                border-width: 5px;
+            }
+            100% { 
+                width: 400px; 
+                height: 400px; 
+                opacity: 0;
+                transform: translate(-50%, -50%) translateZ(10px) scale(1);
+                border-width: 1px;
+            }
+        }
+
+        /* Ultra-Realistic Mobile Alert */
+        .realistic-mobile {
+            position: absolute;
+            left: 80px;
+            bottom: 100px;
+            width: 220px;
+            height: 380px;
+            background: linear-gradient(135deg, 
+                #2c3e50 0%,
+                #34495e 30%,
+                #2c3e50 70%,
+                #1a252f 100%);
+            border: 4px solid #00d4ff;
+            border-radius: 30px;
+            box-shadow: 
+                0 20px 50px rgba(0, 0, 0, 0.7),
+                0 0 40px rgba(0, 212, 255, 0.4),
+                inset 0 3px 0 rgba(255, 255, 255, 0.15);
+            opacity: 0;
+            transform: scale(0.85) translateZ(30px);
+            transition: all 0.7s ease;
+            transform-style: preserve-3d;
+        }
+
+        .realistic-mobile.visible {
+            opacity: 1;
+            transform: scale(1) translateZ(40px);
+            animation: realisticPhoneVibrate 0.8s ease-in-out infinite;
+        }
+
+        @keyframes realisticPhoneVibrate {
+            0%, 100% { 
+                transform: scale(1) translateZ(40px) translateX(0px) rotateY(2deg);
+            }
+            25% { 
+                transform: scale(1) translateZ(42px) translateX(-4px) rotateY(1deg);
+            }
+            75% { 
+                transform: scale(1) translateZ(42px) translateX(4px) rotateY(3deg);
+            }
+        }
+
+        .phone-display {
+            margin: 15px;
+            height: calc(100% - 30px);
+            background: linear-gradient(135deg, 
+                #1e3c72 0%,
+                #2a5298 50%,
+                #1e3c72 100%);
+            border-radius: 22px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            font-size: 0.9rem;
+            transform: translateZ(8px);
+            box-shadow: 
+                inset 0 3px 15px rgba(0, 212, 255, 0.3),
+                inset 0 0 50px rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        .emergency-header {
+            color: #ff4757;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 3px solid #ff4757;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            animation: emergencyBlink 1.2s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+        }
+
+        @keyframes emergencyBlink {
+            0%, 100% { 
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+            }
+            50% { 
+                opacity: 0.8;
+                text-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
+            }
+        }
+
+        .emergency-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .emergency-item {
+            padding: 8px 12px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .emergency-status {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: #00ff88;
+            animation: statusPulse 2s ease-in-out infinite;
+        }
+
+        /* Ultra-Realistic Cloud Dashboard */
+        .realistic-dashboard {
+            position: absolute;
+            right: 40px;
+            top: 40px;
+            width: 400px;
+            height: 300px;
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.18) 0%,
+                rgba(0, 153, 204, 0.08) 25%,
+                rgba(0, 255, 136, 0.12) 50%,
+                rgba(0, 153, 204, 0.08) 75%,
+                rgba(0, 212, 255, 0.18) 100%);
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #00d4ff, #00ff88, #00d4ff) 1;
+            border-radius: 25px;
+            backdrop-filter: blur(25px);
+            box-shadow: 
+                0 20px 50px rgba(0, 212, 255, 0.35),
+                inset 0 2px 0 rgba(255, 255, 255, 0.15);
+            opacity: 0;
+            transform: translateY(-40px) translateZ(40px);
+            transition: all 0.7s ease;
+            transform-style: preserve-3d;
+        }
+
+        .realistic-dashboard.visible {
+            opacity: 1;
+            transform: translateY(0) translateZ(50px);
+            animation: realisticDashboardFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes realisticDashboardFloat {
+            0%, 100% { 
+                transform: translateY(0) translateZ(50px) rotateX(3deg) rotateY(-2deg);
+            }
+            50% { 
+                transform: translateY(-12px) translateZ(55px) rotateX(3deg) rotateY(-2deg);
+            }
+        }
+
+        .dashboard-display {
+            padding: 25px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transform: translateZ(8px);
+        }
+
+        .dashboard-header {
+            font-size: 1.4rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid;
+            border-image: linear-gradient(90deg, #00d4ff, #00ff88, #00d4ff) 1;
+            padding-bottom: 12px;
+            text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .dashboard-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.15) 0%,
+                rgba(0, 212, 255, 0.05) 100%);
+            border: 2px solid #00d4ff;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            box-shadow: 
+                inset 0 2px 5px rgba(0, 212, 255, 0.2),
+                0 5px 15px rgba(0, 212, 255, 0.1);
+            transform: translateZ(5px);
+        }
+
+        .metric-value {
+            font-weight: bold;
+            color: #00ff88;
+            display: block;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+
+        .metric-alert {
+            color: #ff4757;
+            animation: metricAlert 1.5s ease-in-out infinite;
+        }
+
+        @keyframes metricAlert {
+            0%, 100% { 
+                opacity: 1;
+                text-shadow: 0 0 5px rgba(255, 71, 87, 0.5);
+            }
+            50% { 
+                opacity: 0.8;
+                text-shadow: 0 0 15px rgba(255, 71, 87, 0.8);
+            }
+        }
+
+        /* Interactive Labels */
+        .realistic-label {
+            position: absolute;
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.95) 0%,
+                rgba(0, 0, 0, 0.8) 100%);
+            color: #00d4ff;
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            border: 2px solid #00d4ff;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: 
+                0 8px 20px rgba(0, 0, 0, 0.6),
+                0 0 15px rgba(0, 212, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: translateZ(60px);
+            animation: realisticLabelFloat 4s ease-in-out infinite;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes realisticLabelFloat {
+            0%, 100% { 
+                transform: translateZ(60px) translateY(0px);
+                box-shadow: 
+                    0 8px 20px rgba(0, 0, 0, 0.6),
+                    0 0 15px rgba(0, 212, 255, 0.4);
+            }
+            50% { 
+                transform: translateZ(65px) translateY(-5px);
+                box-shadow: 
+                    0 12px 25px rgba(0, 0, 0, 0.7),
+                    0 0 20px rgba(0, 212, 255, 0.6);
+            }
+        }
+
+        /* AI Decision Popup */
+        .ai-popup {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%) translateZ(70px);
+            background: linear-gradient(135deg, #00ff88, #27ae60, #00ff88);
+            color: white;
+            padding: 20px 35px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 
+                0 15px 40px rgba(0, 255, 136, 0.5),
+                0 0 30px rgba(0, 255, 136, 0.3);
+            opacity: 0;
+            transform: translateX(-50%) translateZ(70px) scale(0.85);
+            transition: all 0.6s ease;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-popup.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateZ(80px) scale(1);
+            animation: aiPopupRealistic 3s ease-in-out infinite;
+        }
+
+        @keyframes aiPopupRealistic {
+            0%, 100% { 
+                transform: translateX(-50%) translateZ(80px) scale(1);
+                box-shadow: 
+                    0 15px 40px rgba(0, 255, 136, 0.5),
+                    0 0 30px rgba(0, 255, 136, 0.3);
+            }
+            50% { 
+                transform: translateX(-50%) translateZ(85px) scale(1.03);
+                box-shadow: 
+                    0 20px 50px rgba(0, 255, 136, 0.7),
+                    0 0 40px rgba(0, 255, 136, 0.5);
+            }
+        }
+
+        /* Controls */
+        .realistic-controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 25px;
+            z-index: 1000;
+        }
+
+        .realistic-btn {
+            background: linear-gradient(135deg, #00d4ff, #0099cc, #00d4ff);
+            border: none;
+            color: white;
+            padding: 18px 35px;
+            border-radius: 35px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 
+                0 10px 25px rgba(0, 212, 255, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            transform: translateZ(30px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .realistic-btn:hover {
+            transform: translateY(-4px) translateZ(35px);
+            box-shadow: 
+                0 15px 35px rgba(0, 212, 255, 0.6),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .realistic-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: translateZ(30px);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .progress-step {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.3);
+            border: 2px solid #00d4ff;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .progress-step.completed {
+            background: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.7);
+            animation: progressStepPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes progressStepPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 15px;
+            height: 2px;
+            background: #00d4ff;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .progress-step.completed::after {
+            opacity: 1;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.2rem;
+            }
+            
+            .demo-container {
+                min-height: 700px;
+                padding: 25px;
+            }
+            
+            .demo-content {
+                height: 600px;
+            }
+            
+            .realistic-vehicle {
+                width: 280px;
+                height: 140px;
+            }
+            
+            .realistic-component {
+                width: 100px;
+                height: 70px;
+                font-size: 0.9rem;
+            }
+            
+            .realistic-mobile {
+                width: 180px;
+                height: 300px;
+            }
+            
+            .realistic-dashboard {
+                width: 320px;
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Ultra-Realistic Accident Detection System</h1>
+        
+        <div class="demo-container">
+            <div class="demo-header">
+                <div class="demo-title" id="demoTitle">Scene 1: Vehicle & Sensors Ready</div>
+                <div class="demo-status" id="demoStatus">System Monitoring</div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-step completed" id="step1"></div>
+                <div class="progress-step" id="step2"></div>
+                <div class="progress-step" id="step3"></div>
+                <div class="progress-step" id="step4"></div>
+            </div>
+            
+            <div class="demo-content">
+                <!-- Ultra-Realistic Vehicle -->
+                <div class="realistic-vehicle" id="realisticVehicle">
+                    <div class="vehicle-chassis" id="vehicleChassis">
+                        <div class="vehicle-windshield"></div>
+                        <div class="vehicle-lights left"></div>
+                        <div class="vehicle-lights right"></div>
+                        <div class="vehicle-icon">🚗</div>
+                    </div>
+                    
+                    <!-- Ultra-Realistic Sensors -->
+                    <div class="realistic-sensor sensor-accelerometer" id="sensorAccel"></div>
+                    <div class="realistic-sensor sensor-gyroscope" id="sensorGyro"></div>
+                    <div class="realistic-sensor sensor-impact" id="sensorImpact"></div>
+                    
+                    <div class="realistic-label" style="bottom: -50px; left: 50%; transform: translateX(-50%) translateZ(60px);">
+                        🚗 Vehicle with Advanced IoT Sensors
+                    </div>
+                </div>
+                
+                <!-- Ultra-Realistic Impact Effects -->
+                <div class="realistic-impact" id="realisticImpact1"></div>
+                <div class="realistic-impact" id="realisticImpact2" style="animation-delay: 0.7s;"></div>
+                <div class="realistic-impact" id="realisticImpact3" style="animation-delay: 1.4s;"></div>
+                
+                <!-- Ultra-Realistic ESP32 Controller -->
+                <div class="realistic-component esp32-controller" id="esp32Controller">
+                    ESP32
+                    <div class="realistic-label" style="top: -45px; left: 50%; transform: translateX(-50%) translateZ(60px);">
+                        🧠 ESP32: AI-Powered Processing Unit
+                    </div>
+                </div>
+                
+                <!-- Ultra-Realistic GPS Module -->
+                <div class="realistic-component gps-realistic" id="gpsRealistic">
+                    📡
+                    <div class="realistic-label" style="bottom: -45px; left: 50%; transform: translateX(-50%) translateZ(60px);">
+                        📍 GPS: Real-Time Location Tracking
+                    </div>
+                </div>
+                
+                <!-- Ultra-Realistic GSM Module -->
+                <div class="realistic-component gsm-realistic" id="gsmRealistic">
+                    📶
+                    <div class="realistic-label" style="top: -45px; left: 50%; transform: translateX(-50%) translateZ(60px);">
+                        📡 GSM: Emergency Communication Hub
+                    </div>
+                </div>
+                
+                <!-- Ultra-Realistic Data Flow -->
+                <div class="realistic-dataflow flow-sensors-esp32" id="flowSensorsEsp32"></div>
+                <div class="realistic-dataflow flow-esp32-gps" id="flowEsp32Gps"></div>
+                <div class="realistic-dataflow flow-esp32-gsm" id="flowEsp32Gsm"></div>
+                <div class="realistic-dataflow flow-gsm-cloud" id="flowGsmCloud"></div>
+                
+                <!-- AI Decision Popup -->
+                <div class="ai-popup" id="aiPopup">
+                    🤖 AI Analysis: ACCIDENT CONFIRMED ✅
+                </div>
+                
+                <!-- Ultra-Realistic Mobile Alert -->
+                <div class="realistic-mobile" id="realisticMobile">
+                    <div class="phone-display">
+                        <div class="emergency-header">🚨 CRITICAL EMERGENCY ALERT</div>
+                        <div class="emergency-details">
+                            <div class="emergency-item"><strong>🚗 Vehicle Accident Detected</strong></div>
+                            <div class="emergency-item">📍 Location: Highway 101, Mile Marker 23</div>
+                            <div class="emergency-item">⚠️ Impact Severity: HIGH</div>
+                            <div class="emergency-item">👤 Driver: John Doe</div>
+                            <div class="emergency-item">📞 Emergency Contact: +1-555-0123</div>
+                            <div class="emergency-item">🕐 Time: 14:32:15</div>
+                            <div class="emergency-status">
+                                🚑 Emergency Services Dispatched<br>
+                                👨‍⚕️ Paramedics En Route<br>
+                                📱 Family Members Notified<br>
+                                ⏱️ ETA: 2 minutes 45 seconds
+                            </div>
+                        </div>
+                    </div>
+                    <div class="realistic-label" style="bottom: -45px; left: 50%; transform: translateX(-50%) translateZ(60px);">
+                        📱 Instant Emergency Notification
+                    </div>
+                </div>
+                
+                <!-- Ultra-Realistic Cloud Dashboard -->
+                <div class="realistic-dashboard" id="realisticDashboard">
+                    <div class="dashboard-display">
+                        <div class="dashboard-header">🌐 Emergency Response Command Center</div>
+                        <div class="dashboard-metrics">
+                            <div class="metric-card">
+                                Impact Detection
+                                <span class="metric-value" id="impactMetric">Normal</span>
+                            </div>
+                            <div class="metric-card">
+                                GPS Location
+                                <span class="metric-value" id="locationMetric">Active</span>
+                            </div>
+                            <div class="metric-card">
+                                Alert Status
+                                <span class="metric-value" id="alertMetric">Standby</span>
+                            </div>
+                            <div class="metric-card">
+                                Response ETA
+                                <span class="metric-value" id="responseMetric">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="realistic-label" style="top: -45px; left: 50%; transform: translateX(-50%) translateZ(60px);">
+                        ☁️ Live Cloud Analytics Dashboard
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="realistic-controls">
+            <button class="realistic-btn" onclick="previousDemo()" id="prevBtnRealistic" disabled>← Previous Scene</button>
+            <button class="realistic-btn" onclick="nextDemo()" id="nextBtnRealistic">Next Scene →</button>
+            <button class="realistic-btn" onclick="resetRealisticDemo()">🔄 Reset Demo</button>
+        </div>
+    </div>
+
+    <script>
+        let currentDemo = 1;
+        const totalDemos = 4;
+        
+        const demoScenarios = {
+            1: {
+                title: "Scene 1: Vehicle & Sensors Ready",
+                status: "System Monitoring"
+            },
+            2: {
+                title: "Scene 2: Accident Detection & AI Analysis",
+                status: "Processing Critical Impact"
+            },
+            3: {
+                title: "Scene 3: Emergency Alert Transmission",
+                status: "Dispatching Alerts"
+            },
+            4: {
+                title: "Scene 4: Live Cloud Dashboard & Response",
+                status: "Coordinating Emergency Response"
+            }
+        };
+        
+        function updateDemo(demo) {
+            // Update header
+            document.getElementById('demoTitle').textContent = demoScenarios[demo].title;
+            document.getElementById('demoStatus').textContent = demoScenarios[demo].status;
+            
+            // Update progress steps
+            for (let i = 1; i <= totalDemos; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (i <= demo) {
+                    step.classList.add('completed');
+                } else {
+                    step.classList.remove('completed');
+                }
+            }
+            
+            // Reset all elements
+            resetAllRealisticElements();
+            
+            // Apply demo-specific changes
+            switch(demo) {
+                case 1:
+                    // Normal monitoring state
+                    document.getElementById('flowSensorsEsp32').classList.add('flowing');
+                    break;
+                    
+                case 2:
+                    // Accident detection and AI analysis
+                    document.getElementById('vehicleChassis').classList.add('crashed');
+                    document.getElementById('sensorAccel').classList.add('triggered');
+                    document.getElementById('sensorGyro').classList.add('triggered');
+                    document.getElementById('sensorImpact').classList.add('triggered');
+                    document.getElementById('esp32Controller').classList.add('active');
+                    document.getElementById('realisticImpact1').classList.add('active');
+                    document.getElementById('realisticImpact2').classList.add('active');
+                    document.getElementById('realisticImpact3').classList.add('active');
+                    document.getElementById('flowSensorsEsp32').classList.add('flowing');
+                    
+                    // Show AI decision popup after delay
+                    setTimeout(() => {
+                        document.getElementById('aiPopup').classList.add('visible');
+                    }, 1500);
+                    
+                    // Update dashboard metrics
+                    document.getElementById('impactMetric').textContent = 'DETECTED';
+                    document.getElementById('impactMetric').className = 'metric-value metric-alert';
+                    break;
+                    
+                case 3:
+                    // Alert transmission
+                    document.getElementById('vehicleChassis').classList.add('crashed');
+                    document.getElementById('sensorAccel').classList.add('triggered');
+                    document.getElementById('sensorGyro').classList.add('triggered');
+                    document.getElementById('sensorImpact').classList.add('triggered');
+                    document.getElementById('esp32Controller').classList.add('active');
+                    document.getElementById('gsmRealistic').classList.add('transmitting');
+                    document.getElementById('realisticMobile').classList.add('visible');
+                    document.getElementById('flowSensorsEsp32').classList.add('flowing');
+                    document.getElementById('flowEsp32Gsm').classList.add('flowing');
+                    
+                    // Update dashboard metrics
+                    document.getElementById('impactMetric').textContent = 'CRITICAL';
+                    document.getElementById('impactMetric').className = 'metric-value metric-alert';
+                    document.getElementById('locationMetric').textContent = 'LOCKED';
+                    document.getElementById('alertMetric').textContent = 'SENT';
+                    document.getElementById('alertMetric').className = 'metric-value metric-alert';
+                    break;
+                    
+                case 4:
+                    // Cloud dashboard and full response
+                    document.getElementById('vehicleChassis').classList.add('crashed');
+                    document.getElementById('sensorAccel').classList.add('triggered');
+                    document.getElementById('sensorGyro').classList.add('triggered');
+                    document.getElementById('sensorImpact').classList.add('triggered');
+                    document.getElementById('esp32Controller').classList.add('active');
+                    document.getElementById('gsmRealistic').classList.add('transmitting');
+                    document.getElementById('realisticMobile').classList.add('visible');
+                    document.getElementById('realisticDashboard').classList.add('visible');
+                    document.getElementById('flowSensorsEsp32').classList.add('flowing');
+                    document.getElementById('flowEsp32Gsm').classList.add('flowing');
+                    document.getElementById('flowGsmCloud').classList.add('flowing');
+                    
+                    // Update all dashboard metrics
+                    document.getElementById('impactMetric').textContent = 'ACTIVE';
+                    document.getElementById('impactMetric').className = 'metric-value metric-alert';
+                    document.getElementById('locationMetric').textContent = 'TRACKED';
+                    document.getElementById('alertMetric').textContent = 'DISPATCHED';
+                    document.getElementById('alertMetric').className = 'metric-value metric-alert';
+                    document.getElementById('responseMetric').textContent = '2:45';
+                    document.getElementById('responseMetric').className = 'metric-value metric-alert';
+                    break;
+            }
+            
+            // Update button states
+            document.getElementById('prevBtnRealistic').disabled = (demo === 1);
+            document.getElementById('nextBtnRealistic').disabled = (demo === totalDemos);
+        }
+        
+        function resetAllRealisticElements() {
+            // Reset vehicle
+            document.getElementById('vehicleChassis').classList.remove('crashed');
+            
+            // Reset sensors
+            document.getElementById('sensorAccel').classList.remove('triggered');
+            document.getElementById('sensorGyro').classList.remove('triggered');
+            document.getElementById('sensorImpact').classList.remove('triggered');
+            
+            // Reset components
+            document.getElementById('esp32Controller').classList.remove('active');
+            document.getElementById('gsmRealistic').classList.remove('transmitting');
+            
+            // Reset UI elements
+            document.getElementById('realisticImpact1').classList.remove('active');
+            document.getElementById('realisticImpact2').classList.remove('active');
+            document.getElementById('realisticImpact3').classList.remove('active');
+            document.getElementById('aiPopup').classList.remove('visible');
+            document.getElementById('realisticMobile').classList.remove('visible');
+            document.getElementById('realisticDashboard').classList.remove('visible');
+            
+            // Reset data flows
+            document.getElementById('flowSensorsEsp32').classList.remove('flowing');
+            document.getElementById('flowEsp32Gps').classList.remove('flowing');
+            document.getElementById('flowEsp32Gsm').classList.remove('flowing');
+            document.getElementById('flowGsmCloud').classList.remove('flowing');
+            
+            // Reset dashboard metrics
+            document.getElementById('impactMetric').textContent = 'Normal';
+            document.getElementById('impactMetric').className = 'metric-value';
+            document.getElementById('locationMetric').textContent = 'Active';
+            document.getElementById('locationMetric').className = 'metric-value';
+            document.getElementById('alertMetric').textContent = 'Standby';
+            document.getElementById('alertMetric').className = 'metric-value';
+            document.getElementById('responseMetric').textContent = '--';
+            document.getElementById('responseMetric').className = 'metric-value';
+        }
+        
+        function nextDemo() {
+            if (currentDemo < totalDemos) {
+                currentDemo++;
+                updateDemo(currentDemo);
+            }
+        }
+        
+        function previousDemo() {
+            if (currentDemo > 1) {
+                currentDemo--;
+                updateDemo(currentDemo);
+            }
+        }
+        
+        function resetRealisticDemo() {
+            currentDemo = 1;
+            updateDemo(currentDemo);
+        }
+        
+        // Auto-advance every 8 seconds for more realistic viewing
+        function autoAdvanceRealistic() {
+            if (currentDemo < totalDemos) {
+                nextDemo();
+            } else {
+                resetRealisticDemo();
+            }
+        }
+        
+        // Start auto-advance after 7 seconds
+        setTimeout(() => {
+            setInterval(autoAdvanceRealistic, 8000);
+        }, 7000);
+        
+        // Initialize the demo
+        updateDemo(currentDemo);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984bc61b568afcad',t:'MTc1ODgxNjQzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
